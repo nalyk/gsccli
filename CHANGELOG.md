@@ -7,23 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Repository governance: `CODE_OF_CONDUCT.md`, `SECURITY.md`, `CONTRIBUTING.md`,
-  issue templates, PR template, `CODEOWNERS`.
-- Supply-chain hardening: Dependabot (`npm` + `github-actions`, weekly, grouped),
-  CodeQL scheduled scans on JS/TS, release workflow with npm provenance.
-- CI hardening: least-privilege `permissions:`, concurrency cancel-superseded,
-  `timeout-minutes`, `publint` step on the build artifact.
-- `.nvmrc`, `.editorconfig`, and `packageManager` field for reproducible local
-  setup across editors and Node managers.
+_Nothing yet. New entries land here between releases._
 
-### Changed
-- `package.json`: added `funding` and `publishConfig.provenance` so npm publishes
-  carry an OIDC-attested provenance statement.
+## [1.1.0] - 2026-05-02
 
-## [1.1.0] - 2026-05-01
+First public release on npm.
 
-### Added
+### Added — CLI features
+
 - **Indexing API** (`gsccli index`): submit, status, batch (parallel + rate-limited).
   Single OAuth login covers both `webmasters` and `indexing` scopes.
 - **MCP server** (`gsccli mcp`): read-only Model Context Protocol surface exposing
@@ -51,6 +42,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Output formats**: table (default), JSON, NDJSON, CSV, ASCII chart.
 - **Retry**: HTTP-status-based with full-jitter exponential backoff. Override via
   `GSCCLI_MAX_RETRIES` and `GSCCLI_RETRY_BASE_MS`.
+
+### Added — repository governance & supply chain
+
+- `CODE_OF_CONDUCT.md`, `SECURITY.md`, `CONTRIBUTING.md`, issue templates, PR
+  template, `CODEOWNERS`.
+- Dependabot (`npm` + `github-actions`, weekly, grouped).
+- CodeQL scheduled scans (`security-extended`, `security-and-quality`) on
+  JS/TS.
+- Release workflow with **npm provenance** (OIDC-attested), tag-vs-package.json
+  guard, auto-extracted release notes, and a tarball install smoke-test before
+  publish.
+- CI hardening: least-privilege `permissions:`, concurrency cancel-superseded
+  on PRs, `timeout-minutes`, `publint` on the build artifact.
+- Branch protection on `main`: required CI status checks, linear history, no
+  force-push, no deletions, conversation resolution required.
+
+### Added — tooling
+
+- `package.json`: `funding`, `publishConfig.{access,provenance}`,
+  `packageManager`, `engines.pnpm`.
+- `.nvmrc` and `.editorconfig` for reproducible local setup.
 
 [Unreleased]: https://github.com/nalyk/gsccli/compare/v1.1.0...HEAD
 [1.1.0]: https://github.com/nalyk/gsccli/releases/tag/v1.1.0

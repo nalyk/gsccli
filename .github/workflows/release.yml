@@ -125,6 +125,23 @@ jobs:
           echo "tarball=$TARBALL" >> "$GITHUB_OUTPUT"
           ls -lh "$TARBALL"
 
+      - name: Smoke-test the tarball (install + run --version + run --help)
+        run: |
+          TARBALL="${{ steps.pack.outputs.tarball }}"
+          SMOKE_DIR=$(mktemp -d)
+          # Install in an isolated directory, NOT linked to the workspace.
+          # `npm install` (not pnpm) — closer to what end-users running `npm i -g gsccli` will get.
+          cd "$SMOKE_DIR"
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund "$GITHUB_WORKSPACE/$TARBALL"
+          # Resolve the bin and execute it. If shebang/bin field is broken, this fails here, not on npm.
+          BIN_PATH="$SMOKE_DIR/node_modules/.bin/gsccli"
+          test -x "$BIN_PATH" || { echo "::error::gsccli bin not executable at $BIN_PATH"; exit 1; }
+          echo "--- gsccli --version ---"
+          "$BIN_PATH" --version
+          echo "--- gsccli --help (first 20 lines) ---"
+          "$BIN_PATH" --help | head -20
+
       - name: Extract release notes from CHANGELOG
         id: notes
         run: |
@@ -194,7 +211,12 @@ jobs:
       - name: Verify package contents (publint)
         run: pnpm dlx publint
 
-      - name: Publish
+      - name: Publish (dry run — catches metadata/auth before the real publish)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish --no-git-checks --access public --dry-run
+
+      - name: Publish (real)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm publish --no-git-checks --access public --provenance
