@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussion / Q&A
+    url: https://github.com/nalyk/gsccli/discussions
+    about: Open-ended ideas, "how do I…" questions, and general SEO workflow chat. Use this before opening a feature request.
+  - name: 🔐 Security vulnerability (private)
+    url: https://github.com/nalyk/gsccli/security/advisories/new
+    about: Report a security issue privately via GitHub Security Advisories — never in public issues.

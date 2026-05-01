@@ -6,15 +6,23 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   verify:
     name: Verify (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     strategy:
       fail-fast: false
       matrix:
-        node: ['22', '24']
+        node: ["22", "24"]
 
     steps:
       - name: Checkout
@@ -45,3 +53,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: publint (package shape)
+        # Run once on the lowest supported Node — the package shape is identical across versions.
+        if: matrix.node == '22'
+        run: pnpm dlx publint

@@ -1,0 +1,64 @@
+name: ✨ Feature request
+description: Propose a capability that pulls its weight.
+title: "feat: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before opening this, consider starting a [Discussion](https://github.com/nalyk/gsccli/discussions)
+        for open-ended ideas. File a feature request when you have a concrete proposal.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: The SEO workflow you're stuck on, or the API shape gsccli doesn't currently expose.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: |
+        Concrete shape — flag names, command names, output format. If it's a new command, sketch the help
+        text. If it's a new flag, name it and say what it does.
+      placeholder: |
+        gsccli query …  --new-flag <value>
+        # behavior: …
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Existing gsccli features, raw GSC API calls, or other CLIs you've tried.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where does this live?
+      multiple: true
+      options:
+        - Search Analytics (`query …`)
+        - Sites (`sites …`)
+        - Sitemaps (`sitemaps …`)
+        - URL Inspection (`inspect …`)
+        - Indexing API (`index …`)
+        - Auth (`auth …`)
+        - Config (`config …`)
+        - MCP server
+        - Output formatters / `--format`
+        - Other / cross-cutting
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmations
+      options:
+        - label: I searched [existing issues and discussions](https://github.com/nalyk/gsccli/issues?q=) for duplicates.
+          required: true
+        - label: This is something the GSC or Indexing API actually supports (or I've flagged that it doesn't).
+          required: true

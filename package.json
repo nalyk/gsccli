@@ -36,6 +36,11 @@
   "bugs": {
     "url": "https://github.com/nalyk/gsccli/issues"
   },
+  "funding": "https://github.com/sponsors/nalyk",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
@@ -72,6 +77,8 @@
     "vitest": "^4.1.5"
   },
   "engines": {
-    "node": ">=22.0.0"
-  }
+    "node": ">=22.0.0",
+    "pnpm": ">=10"
+  },
+  "packageManager": "pnpm@10.29.3"
 }

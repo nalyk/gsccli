@@ -1,0 +1,81 @@
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+
+updates:
+  # ---------- npm (production + dev) ----------
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Chisinau
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - dependencies
+      - npm
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      # Google API surface — bump together so types stay coherent.
+      google-apis:
+        applies-to: version-updates
+        patterns:
+          - "googleapis"
+          - "google-auth-library"
+      # MCP server stays on its own minor cadence — but group its patches.
+      mcp-sdk:
+        applies-to: version-updates
+        patterns:
+          - "@modelcontextprotocol/*"
+        update-types:
+          - patch
+      # Test toolchain churns together.
+      test-tools:
+        applies-to: version-updates
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+      # Type packages.
+      types:
+        applies-to: version-updates
+        patterns:
+          - "@types/*"
+      # Everything else, minor + patch, one PR.
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # Major bumps for these need manual review (breaking shape changes).
+      - dependency-name: "commander"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "zod"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "googleapis"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "google-auth-library"
+        update-types: ["version-update:semver-major"]
+
+  # ---------- GitHub Actions ----------
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Chisinau
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      actions:
+        applies-to: version-updates
+        patterns:
+          - "*"

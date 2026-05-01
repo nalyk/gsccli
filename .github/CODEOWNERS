@@ -1,0 +1,17 @@
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# Solo-maintainer repo: every PR requests review from @nalyk by default.
+# Add additional owners per-path as the team grows.
+
+* @nalyk
+
+# Architectural invariants — extra scrutiny on these.
+/CLAUDE.md                  @nalyk
+/.github/workflows/         @nalyk
+/.github/CODEOWNERS         @nalyk
+/SECURITY.md                @nalyk
+/src/validation/schemas.ts  @nalyk
+/src/services/auth.service.ts        @nalyk
+/src/services/cache.service.ts       @nalyk
+/src/services/config.service.ts      @nalyk
+/src/utils/concurrency.ts            @nalyk
