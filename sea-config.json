@@ -1,0 +1,7 @@
+{
+  "main": "dist/index.js",
+  "output": "dist/gsccli.blob",
+  "disableExperimentalSEAWarning": true,
+  "useSnapshot": false,
+  "useCodeCache": true
+}

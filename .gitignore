@@ -1,0 +1,83 @@
+# ----------------------------------------------------------------------------
+# Dependencies & build output
+# ----------------------------------------------------------------------------
+node_modules/
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Source-map / declaration files outside src/ (we ship .d.ts via dist/types)
+*.js.map
+*.d.ts
+!src/**/*.d.ts
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# ----------------------------------------------------------------------------
+# Package manager artifacts (we keep pnpm-lock.yaml; everything else is noise)
+# ----------------------------------------------------------------------------
+.pnpm-store/
+.yarn/
+.npm/
+.pnp.*
+package-lock.json
+yarn.lock
+
+# ----------------------------------------------------------------------------
+# Secrets, credentials, runtime artifacts that must NEVER be committed
+# ----------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+oauth-tokens.json
+*-credentials.json
+service-account*.json
+client_secret*.json
+*.pem
+*.key
+
+# Per-project gsccli config — leave this commented; some users WILL want to commit
+# their .gsccli.json (it holds only site URL + format prefs, no secrets). Uncomment
+# this line if your repo represents multiple sites or developers point at staging.
+# .gsccli.json
+
+# ----------------------------------------------------------------------------
+# OS / editor cruft
+# ----------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+.fleet/
+
+# ----------------------------------------------------------------------------
+# Logs & temporary files
+# ----------------------------------------------------------------------------
+*.log
+logs/
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.tmp/
+tmp/
+
+# ----------------------------------------------------------------------------
+# AI tool state — keep your own, don't ship it
+# ----------------------------------------------------------------------------
+.claude/
+.serena/
+.cursor/
+.aider*
+.continue/
+.codeium/
