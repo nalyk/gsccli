@@ -88,9 +88,67 @@ critical than the final PR title — keep that one Conventional.
 ## Releases
 
 We follow [Semantic Versioning](https://semver.org) and keep a [CHANGELOG.md](./CHANGELOG.md)
-in the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format. Maintainers tag
-releases as `vX.Y.Z`; the release workflow verifies, builds, and (when `NPM_TOKEN` is
-configured) publishes to npm.
+in the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
+
+### Routine release (every release after the first)
+
+```bash
+npm version patch -m "Release v%s"        # minor / major as appropriate
+git push origin main --follow-tags
+```
+
+That triggers `.github/workflows/release.yml`, which matrix-verifies on Node 22 + 24,
+asserts tag↔package.json agree, smoke-tests the freshly-packed tarball, creates a
+GitHub Release with notes pulled from `CHANGELOG.md`'s `## [version]` section, and
+publishes to npm via **OIDC trusted publishing** (no token, with provenance
+attestation auto-attached).
+
+### First-publish bootstrap (one-time, human-only)
+
+OIDC trusted publishing requires the package to already exist on npm before the
+trusted-publisher relationship can be configured. The first publish is therefore
+manual:
+
+```bash
+# 1. Pull latest, confirm logged-in identity
+git pull
+npm whoami        # if missing: npm login
+
+# 2. Build
+pnpm install --frozen-lockfile
+pnpm build
+
+# 3. Get a fresh OTP from your authenticator app and publish within 30 seconds.
+#    Always pass --otp explicitly; npm 11.x sometimes 403s instead of prompting.
+npm publish --otp=XXXXXX --access public
+
+# 4. Confirm
+npm view gsccli@$(node -p "require('./package.json').version") dist.tarball
+```
+
+Then configure the trusted publisher at <https://www.npmjs.com/package/gsccli/access>
+→ **Trusted Publishers** tab → **Add trusted publisher**:
+
+| Field                | Value             |
+|----------------------|-------------------|
+| Provider             | GitHub Actions    |
+| Organization or user | `nalyk`           |
+| Repository           | `gsccli`          |
+| Workflow filename    | `release.yml`     |
+| Environment name     | `npm`             |
+
+Save. From this point on, every `vX.Y.Z` tag pushed to `main` ships via OIDC with
+zero secrets.
+
+### Verify OIDC works (after bootstrap + trusted-publisher config)
+
+```bash
+gh workflow run release.yml --ref main
+```
+
+A green run on `main` is proof the OIDC handshake works end-to-end. The publish step
+will emit `::notice::gsccli@X.Y.Z already on npm — skipping publish.` because the
+idempotency guard sees the bootstrap publish.
 
 ## Code of Conduct
 

@@ -169,16 +169,23 @@ jobs:
             --verify-tag \
             "${{ steps.pack.outputs.tarball }}"
 
-  # ---------- Stage 4: npm publish (only if NPM_TOKEN is configured) ----------
+  # ---------- Stage 4: npm publish via OIDC trusted publishing ----------
+  # No NPM_TOKEN, no --provenance flag, no .npmrc auth token.
+  # The trusted-publisher relationship configured at npmjs.com/package/gsccli/access
+  # validates this workflow's OIDC claim (org+repo+workflow filename+environment) and
+  # auto-attaches a provenance attestation to the published artifact.
+  #
+  # PREREQUISITE: package must already exist on npm. First publish is a one-time
+  # manual `npm publish --otp=XXXXXX` from a maintainer's machine — see CONTRIBUTING.md.
   npm-publish:
-    name: npm publish (with provenance)
+    name: npm publish (OIDC trusted publishing)
     runs-on: ubuntu-latest
     needs: [guard, github-release]
     timeout-minutes: 10
 
-    # OIDC for npm provenance attestation.
     permissions:
       contents: read
+      # The lever: npm registry verifies this OIDC token to authorize the publish.
       id-token: write
 
     environment:
@@ -202,6 +209,13 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           cache: pnpm
 
+      # OIDC trusted publishing requires npm >= 11.5.1.
+      # Node 22 ships with npm 10.x — upgrade explicitly.
+      - name: Upgrade npm to >=11.5.1
+        run: |
+          npm install -g npm@latest
+          echo "npm: $(npm --version)"
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -211,12 +225,22 @@ jobs:
       - name: Verify package contents (publint)
         run: pnpm dlx publint
 
-      - name: Publish (dry run — catches metadata/auth before the real publish)
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish --no-git-checks --access public --dry-run
+      # Idempotency: a re-run of the same tag (or workflow_dispatch on a tagged ref)
+      # would EVERSIONEXISTS otherwise. Skip publish + leave existing artifact alone.
+      - name: Skip publish if version already on npm
+        id: check
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view "${NAME}@${VERSION}" version >/dev/null 2>&1; then
+            echo "already_published=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::${NAME}@${VERSION} already on npm — skipping publish."
+          else
+            echo "already_published=false" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Publish (real)
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish --no-git-checks --access public --provenance
+      - name: Publish via OIDC
+        if: steps.check.outputs.already_published == 'false'
+        # No NODE_AUTH_TOKEN, no --provenance flag — both handled by OIDC.
+        # Use `npm` directly (not `pnpm publish`) for a known-good OIDC path.
+        run: npm publish --access public

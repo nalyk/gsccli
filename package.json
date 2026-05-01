@@ -10,6 +10,8 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
     "help.md",
     "LICENSE"
   ],
@@ -39,7 +41,7 @@
   "funding": "https://github.com/sponsors/nalyk",
   "publishConfig": {
     "access": "public",
-    "provenance": true
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "tsc",
