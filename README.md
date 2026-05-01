@@ -34,11 +34,24 @@ read-only tools to any LLM client (Claude Desktop, Cursor, Cline, Zed).
 
 ## Setup
 
+Install globally from npm:
+
 ```bash
+npm i -g @nalyk/gsccli
+# or
+pnpm add -g @nalyk/gsccli
+```
+
+Or run from source:
+
+```bash
+git clone git@github.com:nalyk/gsccli.git
+cd gsccli
 pnpm install && pnpm build && pnpm link --global
 ```
 
-Requires Node.js >= 22.
+The binary is `gsccli` either way (the `@nalyk/` scope is only on the npm package
+identifier, not on the CLI you invoke). Requires Node.js >= 22.
 
 ## Authentication
 

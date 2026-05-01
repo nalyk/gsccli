@@ -190,7 +190,7 @@ jobs:
 
     environment:
       name: npm
-      url: https://www.npmjs.com/package/gsccli
+      url: https://www.npmjs.com/package/@nalyk/gsccli
 
     steps:
       - name: Checkout

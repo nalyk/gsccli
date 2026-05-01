@@ -123,10 +123,10 @@ pnpm build
 npm publish --otp=XXXXXX --access public
 
 # 4. Confirm
-npm view gsccli@$(node -p "require('./package.json').version") dist.tarball
+npm view @nalyk/gsccli@$(node -p "require('./package.json').version") dist.tarball
 ```
 
-Then configure the trusted publisher at <https://www.npmjs.com/package/gsccli/access>
+Then configure the trusted publisher at <https://www.npmjs.com/package/@nalyk/gsccli/access>
 → **Trusted Publishers** tab → **Add trusted publisher**:
 
 | Field                | Value             |
@@ -147,8 +147,8 @@ gh workflow run release.yml --ref main
 ```
 
 A green run on `main` is proof the OIDC handshake works end-to-end. The publish step
-will emit `::notice::gsccli@X.Y.Z already on npm — skipping publish.` because the
-idempotency guard sees the bootstrap publish.
+will emit `::notice::@nalyk/gsccli@X.Y.Z already on npm — skipping publish.` because
+the idempotency guard sees the bootstrap publish.
 
 ## Code of Conduct
 

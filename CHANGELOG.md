@@ -11,7 +11,9 @@ _Nothing yet. New entries land here between releases._
 
 ## [1.1.0] - 2026-05-02
 
-First public release on npm.
+First public release on npm. Published as **`@nalyk/gsccli`** (npm rejected the
+unscoped `gsccli` for being too similar to the older `gsc-cli`). The binary you
+invoke is still `gsccli`.
 
 ### Added — CLI features
 
