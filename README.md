@@ -1,7 +1,12 @@
 # gsccli
 
+[![npm version](https://img.shields.io/npm/v/%40nalyk%2Fgsccli?logo=npm&label=npm)](https://www.npmjs.com/package/@nalyk/gsccli)
+[![npm downloads](https://img.shields.io/npm/dm/%40nalyk%2Fgsccli?logo=npm&label=downloads)](https://www.npmjs.com/package/@nalyk/gsccli)
 [![CI](https://github.com/nalyk/gsccli/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nalyk/gsccli/actions/workflows/ci.yml)
-![Node](https://img.shields.io/badge/node-%E2%89%A522-brightgreen)
+[![CodeQL](https://github.com/nalyk/gsccli/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/nalyk/gsccli/actions/workflows/codeql.yml)
+[![Provenance](https://img.shields.io/badge/npm-provenance-7c3aed?logo=npm)](https://docs.npmjs.com/generating-provenance-statements)
+![Node](https://img.shields.io/badge/node-%E2%89%A522-brightgreen?logo=nodedotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript)
 ![ESM](https://img.shields.io/badge/ESM-only-blue)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
@@ -452,3 +457,50 @@ The MCP server (`src/commands/mcp/`) reuses the same service layer.
   pages. Other content types may receive notifications but won't see crawl boost.
 - `query batch` runs requests sequentially (the API has no native batch endpoint).
   For parallelism, use `inspect batch` or `index batch` (which DO use the worker pool).
+
+## Contributing
+
+PRs welcome. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the dev loop, the
+architectural invariants you can't break (also captured in [CLAUDE.md](./CLAUDE.md)),
+and the Conventional Commits PR-title rule.
+
+The `main` branch is protected: required CI on Node 22 + 24, linear history, no
+force pushes, no deletions, conversation resolution required before merge. Squash
+is the only merge method enabled — so the PR title becomes the commit subject on
+`main` (which is why it must be Conventional).
+
+## Security
+
+Vulnerabilities? **Don't open a public issue.** Use one of the private channels in
+[SECURITY.md](./SECURITY.md) — preferably [GitHub Security Advisories](https://github.com/nalyk/gsccli/security/advisories/new).
+
+Releases are published to npm via **OIDC trusted publishing** with
+[provenance attestations](https://docs.npmjs.com/generating-provenance-statements) —
+each artifact is signed by GitHub's OIDC issuer and traceable to the exact
+workflow run that built it. No long-lived `NPM_TOKEN` is involved.
+
+CodeQL runs on every PR (security-extended + security-and-quality query packs)
+and on a weekly schedule.
+
+## Code of conduct
+
+Participation is governed by the [Contributor Covenant 2.1](./CODE_OF_CONDUCT.md).
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) — Keep-a-Changelog format, SemVer-disciplined.
+
+## License
+
+MIT — see [LICENSE](./LICENSE). Authored by [Ion (Nalyk) Calmîș](https://github.com/nalyk).
+
+## Acknowledgements
+
+Built on top of:
+
+- [`googleapis`](https://www.npmjs.com/package/googleapis) — Google's official Node SDK for the GSC and Indexing APIs.
+- [`google-auth-library`](https://www.npmjs.com/package/google-auth-library) — OAuth + service-account flows.
+- [`commander`](https://www.npmjs.com/package/commander) — CLI parsing.
+- [`zod`](https://www.npmjs.com/package/zod) — runtime validation.
+- [`@modelcontextprotocol/sdk`](https://www.npmjs.com/package/@modelcontextprotocol/sdk) — the MCP server surface.
+- [`vitest`](https://vitest.dev) and [`biome`](https://biomejs.dev) — test runner and linter/formatter.
