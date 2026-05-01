@@ -37,9 +37,8 @@ jobs:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Install pnpm
+        # Version derived from packageManager field in package.json.
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Set up Node.js ${{ matrix.node }}
         uses: actions/setup-node@v4
@@ -104,9 +103,8 @@ jobs:
           fetch-depth: 0
 
       - name: Install pnpm
+        # Version derived from packageManager field in package.json.
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -177,9 +175,8 @@ jobs:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Install pnpm
+        # Version derived from packageManager field in package.json.
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
