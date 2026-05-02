@@ -10,6 +10,7 @@ import { createMcpCommand } from './commands/mcp/index.js';
 import { createQueryCommand } from './commands/query/index.js';
 import { createSitemapsCommand } from './commands/sitemaps/index.js';
 import { createSitesCommand } from './commands/sites/index.js';
+import { createSkillsCommand } from './commands/skills/index.js';
 
 const program = new Command();
 
@@ -32,5 +33,6 @@ program.addCommand(createConfigCommand());
 program.addCommand(createAuthCommand());
 program.addCommand(createExploreCommand());
 program.addCommand(createMcpCommand());
+program.addCommand(createSkillsCommand());
 
 program.parse();

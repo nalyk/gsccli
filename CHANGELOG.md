@@ -9,6 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 _Nothing yet. New entries land here between releases._
 
+## [1.2.0] - 2026-05-02
+
+### Added — AI agent integration
+
+- **Bundled Agent Skills (`SKILL.md`)** for the four major AI coding-agent CLIs:
+  Claude Code, Codex (with companion `agents/openai.yaml` UI metadata), Gemini
+  CLI (with `when_to_use` and `allowed_tools: [run_shell_command]`), and Qwen
+  Code. Identical 600-word body across all four; only the per-CLI frontmatter
+  differs. Ships under `agents/` in the npm tarball.
+- **`gsccli skills install|uninstall|list|status`** subcommand. Copies the
+  bundled `SKILL.md` package to the right location for the chosen agent and
+  scope (`--scope user|project`, default `user`). Idempotent (SHA-256 content
+  diff), supports `--dry-run` and `--force`. `--agent all` auto-detects which
+  CLIs are installed by probing `~/.claude/`, `~/.codex/`, `~/.gemini/`,
+  `~/.qwen/`. Refuses `--scope project` unless the CWD has a project marker
+  (`.git`, `package.json`, `pyproject.toml`, etc.). Surfaces per-CLI caveats
+  in the install output (Claude `permissions.deny` precedence, Codex
+  project-trust requirement, Gemini sandbox + browser auth, Qwen issue #2343
+  + OAuth deprecation).
+
+### Notes
+
+- No MCP wiring, plugins, extensions, custom slash commands, profile snippets,
+  or settings-file mutations. Just the right `SKILL.md` in the right place per
+  CLI. Each CLI auto-discovers its skills directory.
+
 ## [1.1.0] - 2026-05-02
 
 First public release on npm. Published as **`@nalyk/gsccli`** (npm rejected the
