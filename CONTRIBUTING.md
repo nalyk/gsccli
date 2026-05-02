@@ -87,21 +87,54 @@ critical than the final PR title — keep that one Conventional.
 
 ## Releases
 
-We follow [Semantic Versioning](https://semver.org) and keep a [CHANGELOG.md](./CHANGELOG.md)
-in the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
+Fully automated. We follow [Semantic Versioning](https://semver.org) and keep
+a [CHANGELOG.md](./CHANGELOG.md) the bot owns end-to-end.
 
-### Routine release (every release after the first)
+### How a release happens (zero manual editing)
+
+1. **Contributor opens a PR** with a Conventional-Commits title (the PR-title-lint
+   workflow blocks anything else; squash-merge means the title becomes the commit).
+2. **PR merges to `main`.** `ci.yml` already verified lint + type-check + tests + build.
+3. **`release-please.yml` runs.** It walks every commit since the last `v<X.Y.Z>` tag
+   and either:
+   - opens a "release PR" (`chore(main): release X.Y.Z`) that bumps `package.json` +
+     `.release-please-manifest.json` + prepends a CHANGELOG entry, OR
+   - updates the existing release PR with the new commit, OR
+   - does nothing (commit was `chore:`/`ci:`/`docs:` — not version-bumping).
+4. **Maintainer reviews + admin-merges the release PR.** This is the only human step.
+5. **`release-please.yml` runs again on the merge.** It creates the `vX.Y.Z` git tag.
+6. **`release.yml` fires from the tag push.** It matrix-verifies on Node 22 + 24,
+   asserts tag↔package.json agree, builds + smoke-tests the freshly-packed tarball,
+   creates a GitHub Release with the tarball as a downloadable asset (release-please
+   is configured with `skip-github-release: true` so this side owns it), and publishes
+   to npm via **OIDC trusted publishing** (no token, provenance attestation
+   auto-attached).
+
+The whole loop is: **commit → review → merge → release-please opens version PR →
+merge that → published.**
+
+### Bump rules (Conventional Commits → version)
+
+- `feat:` → minor bump (1.2.x → 1.3.0)
+- `fix:` / `perf:` / `revert:` / `refactor:` → patch bump (1.2.0 → 1.2.1)
+- `feat!:` / `BREAKING CHANGE:` in body → major bump (1.x → 2.0.0)
+- `docs:` / `ci:` / `chore:` / `style:` / `test:` / `build:` → no bump (rolled into next release)
+
+### Recovering from a release-please defensive abort
+
+If two PRs merge in rapid succession, release-please can sometimes log
+`There are untagged, merged release PRs outstanding - aborting` and skip tag
+creation. Recovery: tag the squash-merge commit of the release PR by hand.
 
 ```bash
-npm version patch -m "Release v%s"        # minor / major as appropriate
-git push origin main --follow-tags
+git pull --rebase
+node -p "require('./package.json').version"     # confirm = X.Y.Z
+git tag -a vX.Y.Z -m "vX.Y.Z" $(git log --grep "release X.Y.Z" --format=%H -1)
+git push origin vX.Y.Z
 ```
 
-That triggers `.github/workflows/release.yml`, which matrix-verifies on Node 22 + 24,
-asserts tag↔package.json agree, smoke-tests the freshly-packed tarball, creates a
-GitHub Release with notes pulled from `CHANGELOG.md`'s `## [version]` section, and
-publishes to npm via **OIDC trusted publishing** (no token, with provenance
-attestation auto-attached).
+`release.yml` fires from the tag push. release-please reconciles itself on the
+next push to `main`.
 
 ### First-publish bootstrap (one-time, human-only)
 
