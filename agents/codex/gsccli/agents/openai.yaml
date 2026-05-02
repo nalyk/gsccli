@@ -1,0 +1,23 @@
+interface:
+  display_name: "Google Search Console CLI"
+  short_description: "Query GSC, compare periods, batch inspect URLs, manage sitemaps"
+  long_description: "Senior-grade gsccli wrapper for Google Search Console + Indexing API: search analytics with period comparison, parallel batch URL inspection with quota awareness, NDJSON streaming for large pulls, file-backed query cache, and Indexing API notifications for job-postings + livestream content."
+  icon: "🔍"
+  brand_color: "#1a73e8"
+  author:
+    name: "Ion Calmîș"
+    url: "https://github.com/nalyk/gsccli"
+  default_prompt: "Use $gsccli to run a 28-day vs prior-28-day comparison query and surface keywords/pages losing clicks or position."
+policy:
+  allow_implicit_invocation: true
+  allow_network_access: true
+  min_approval_level: "on-request"
+dependencies:
+  - name: "gsccli"
+    version: ">=1.1.0"
+    skill: false
+    required: true
+  - name: "node"
+    version: ">=22.0.0"
+    skill: false
+    required: true

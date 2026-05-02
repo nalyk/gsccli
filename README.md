@@ -191,6 +191,45 @@ gsccli mcp serve
 gsccli explore
 ```
 
+## AI agent integration — make your coding agent a `gsccli` power user
+
+`gsccli` ships with a curated `SKILL.md` (Agent Skills standard) for each of the
+four major AI coding-agent CLIs. Install the right one and your agent will know
+the killer workflows (period comparison, `--all` streaming, `--cache 1h`,
+parallel batch inspection), the silent gotchas (country lowercase, device
+uppercase, 25 000-row hard cap, `searchAppearance` solo, `dataState=final`
+3-day lag), and the recovery patterns (`auth login` after `invalid_grant`, lower
+`--rps` after `quotaExceeded`, `gsccli sites list` to fix `notFound`).
+
+```bash
+# Install for one agent (default: user scope, lands in ~/.<cli>/skills/gsccli/)
+gsccli skills install --agent claude
+gsccli skills install --agent codex
+gsccli skills install --agent gemini
+gsccli skills install --agent qwen
+
+# Project scope — drops the skill into ./.<cli>/skills/gsccli/ for the current repo
+gsccli skills install --agent claude --scope project
+
+# Detect every installed CLI and install for all of them
+gsccli skills install --agent all
+
+# Dry-run, idempotency, force overwrite
+gsccli skills install --agent all --dry-run
+gsccli skills install --agent claude --force
+
+# Inventory + status
+gsccli skills list
+gsccli skills status
+gsccli skills uninstall --agent claude
+```
+
+The skill content is identical across the four CLIs; only the frontmatter
+differs. Per-CLI caveats (Claude `permissions.deny` precedence, Gemini sandbox
++ browser auth, Codex project-trust requirement, Qwen issue #2343 + OAuth
+deprecation) are surfaced in the install output and detailed in
+[`agents/README.md`](./agents/README.md).
+
 ## Command structure
 
 ```
@@ -204,6 +243,7 @@ gsccli
   config set|get|list
   explore
   mcp serve
+  skills install|uninstall|list|status
 ```
 
 ## Output formats

@@ -299,6 +299,42 @@ deliberately not exposed.
 
 ---
 
+## skills install / uninstall / list / status
+
+```
+gsccli skills install --agent <claude|codex|gemini|qwen|all>
+                      [--scope <user|project>]   # default: user
+                      [--dry-run]
+                      [--force]
+gsccli skills uninstall --agent <name> [--scope <user|project>]
+gsccli skills list
+gsccli skills status [--agent <name>]
+```
+
+Installs the bundled `SKILL.md` (Agent Skills standard) for one or more AI
+coding-agent CLIs. The skill teaches the agent to use `gsccli` like a senior
+power user — killer workflows, silent gotchas, recovery patterns. Targets:
+
+- `--agent claude` → `~/.claude/skills/gsccli/SKILL.md` (uses
+  `allowed-tools: Bash(gsccli *)` to pre-approve invocations).
+- `--agent codex` → `~/.codex/skills/gsccli/{SKILL.md,agents/openai.yaml}`.
+- `--agent gemini` → `~/.gemini/skills/gsccli/SKILL.md`.
+- `--agent qwen` → `~/.qwen/skills/gsccli/SKILL.md`.
+- `--agent all` → detects which CLIs are installed (probes `~/.<cli>/`) and
+  installs for each.
+
+`--scope project` writes into `./.<cli>/skills/gsccli/` instead; refused unless
+the CWD has a project marker (`.git`, `package.json`, `pyproject.toml`,
+`Cargo.toml`, `go.mod`, etc.). Codex `--scope project` requires the user's
+`~/.codex/config.toml` to mark the directory as `trust_level = "trusted"` for
+Codex to load `.codex/skills/`; the install output reminds you.
+
+Idempotent (SHA-256 content diff): re-installing identical files is a no-op;
+re-installing differing files refuses without `--force`. `--dry-run` prints
+the action tree without writing.
+
+---
+
 ## Filter syntax (shorthand)
 
 | Operator | GSC API | Example |
