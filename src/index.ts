@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
 import { createAuthCommand } from './commands/auth/index.js';
 import { createConfigCommand } from './commands/config/index.js';
@@ -12,12 +15,20 @@ import { createSitemapsCommand } from './commands/sitemaps/index.js';
 import { createSitesCommand } from './commands/sites/index.js';
 import { createSkillsCommand } from './commands/skills/index.js';
 
+// Read version from package.json at runtime so it can never drift from npm metadata.
+// In dev (`tsx src/index.ts`): src/ → ../package.json = repo root.
+// In prod (`node dist/index.js`): dist/ → ../package.json = package install root.
+// Both resolve to the same package.json that `npm` published.
+const pkg = JSON.parse(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'package.json'), 'utf-8'),
+) as { version: string };
+
 const program = new Command();
 
 program
   .name('gsccli')
   .description('Google Search Console CLI tool')
-  .version('1.1.0')
+  .version(pkg.version)
   .option('-s, --site <url>', 'Search Console site URL (https://example.com/ or sc-domain:example.com)')
   .option('-f, --format <format>', 'Output format: table, json, ndjson, csv, chart', 'table')
   .option('-o, --output <file>', 'Write output to file')
