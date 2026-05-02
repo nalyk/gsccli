@@ -1,6 +1,6 @@
 # gsccli
 
-[![Listed on Yoda Digital Open Source](https://img.shields.io/badge/listed%20on-opensource.yoda.digital-af9568?style=flat-square)](https://opensource.yoda.digital/projects/gsccli/)
+[![Listed on Yoda Digital Open Source](https://img.shields.io/badge/listed%20on-opensource.yoda.digital-af9568?style=flat-square)](https://opensource.yoda.digital/en/projects/gsccli/)
 [![npm version](https://img.shields.io/npm/v/%40nalyk%2Fgsccli?logo=npm&label=npm)](https://www.npmjs.com/package/@nalyk/gsccli)
 [![npm downloads](https://img.shields.io/npm/dm/%40nalyk%2Fgsccli?logo=npm&label=downloads)](https://www.npmjs.com/package/@nalyk/gsccli)
 [![CI](https://github.com/nalyk/gsccli/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nalyk/gsccli/actions/workflows/ci.yml)

@@ -30,7 +30,7 @@
   ],
   "license": "MIT",
   "author": "Ion (Nalyk) Calmîș <dev.ungheni@gmail.com>",
-  "homepage": "https://opensource.yoda.digital/projects/gsccli/",
+  "homepage": "https://opensource.yoda.digital/en/projects/gsccli/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nalyk/gsccli.git"
