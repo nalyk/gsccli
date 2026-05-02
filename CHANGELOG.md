@@ -5,6 +5,13 @@ All notable changes to `gsccli` are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1](https://github.com/nalyk/gsccli/compare/v1.2.0...v1.2.1) (2026-05-02)
+
+
+### Fixed
+
+* **cli:** read version from package.json + add release-please for automated releases ([#7](https://github.com/nalyk/gsccli/issues/7)) ([1d6d91c](https://github.com/nalyk/gsccli/commit/1d6d91c9474cc603b8ff5d71af8d61433cdf6e7d))
+
 ## [Unreleased]
 
 _release-please now owns this section — version bumps and CHANGELOG entries
