@@ -12,11 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * **cli:** read version from package.json + add release-please for automated releases ([#7](https://github.com/nalyk/gsccli/issues/7)) ([1d6d91c](https://github.com/nalyk/gsccli/commit/1d6d91c9474cc603b8ff5d71af8d61433cdf6e7d))
 
-## [Unreleased]
-
-_release-please now owns this section — version bumps and CHANGELOG entries
-land here automatically based on conventional commits._
-
 ## [1.2.0] - 2026-05-02
 
 ### Added — AI agent integration

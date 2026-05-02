@@ -1,0 +1,47 @@
+name: pr-title-lint
+
+# Squash-merge is the only enabled merge strategy on this repo, so the PR title
+# becomes the commit message on main. release-please then reads those messages
+# to decide version bumps. A non-conventional PR title here = a missed bump
+# downstream. This workflow blocks PRs whose title doesn't parse as
+# conventional commits.
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate:
+    name: Validate PR title is Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Types accepted = the same set that release-please recognises in our
+          # release-please-config.json. Keep these in sync if you add types.
+          types: |
+            feat
+            fix
+            perf
+            revert
+            refactor
+            docs
+            build
+            ci
+            chore
+            style
+            test
+          # Require a description after the type. Reject just `feat:` with no body.
+          requireScope: false
+          subjectPattern: ^.+$
+          subjectPatternError: |
+            The subject (after `<type>:` or `<type>(<scope>):`) cannot be empty.
+            Examples:
+              feat(skills): bundle Agent Skills install subcommand
+              fix(cli): read --version from package.json
+              docs(release): document release-please flow
