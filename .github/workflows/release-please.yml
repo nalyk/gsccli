@@ -31,3 +31,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+          # release-please owns: version bumps, CHANGELOG entries, the v<X.Y.Z>
+          # tag created on PR merge. release.yml owns: building + smoke-testing
+          # the tarball, creating the GitHub Release WITH that tarball as an
+          # asset, and OIDC-publishing to npm. Skipping the bot's own GitHub
+          # Release here prevents the two from colliding.
+          skip-github-release: true
