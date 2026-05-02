@@ -1,0 +1,33 @@
+name: release-please
+
+# Watches main for conventional commits. When commits since the last release
+# add up to a version bump (feat → minor, fix → patch, BREAKING CHANGE → major),
+# opens or updates a "release PR" that bumps package.json + .release-please-manifest.json
+# and prepends new CHANGELOG.md entries. Merging that PR creates the v<X.Y.Z> tag,
+# which triggers release.yml to publish to npm + GitHub Releases.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: release-please
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          # Default GITHUB_TOKEN works because we don't modify workflow files via
+          # the bot. If we ever need to (e.g. release-please updating itself),
+          # swap to a PAT with `workflow` scope.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
