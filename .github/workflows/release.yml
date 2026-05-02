@@ -158,16 +158,23 @@ jobs:
           echo "--- release notes ---"
           cat release-notes.md
 
-      - name: Create GitHub Release
+      # Idempotent: if the release already exists (e.g. previous run failed at the
+      # later npm-publish stage and we're re-triggering via workflow_dispatch), skip.
+      # The CHANGELOG/notes are already attached from the first run.
+      - name: Create GitHub Release (skip if already exists)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ github.event.inputs.tag || github.ref_name }}"
-          gh release create "$TAG" \
-            --title "$TAG" \
-            --notes-file release-notes.md \
-            --verify-tag \
-            "${{ steps.pack.outputs.tarball }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "::notice::Release $TAG already exists — skipping create."
+          else
+            gh release create "$TAG" \
+              --title "$TAG" \
+              --notes-file release-notes.md \
+              --verify-tag \
+              "${{ steps.pack.outputs.tarball }}"
+          fi
 
   # ---------- Stage 4: npm publish via OIDC trusted publishing ----------
   # No NPM_TOKEN, no --provenance flag, no .npmrc auth token.
@@ -209,13 +216,6 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           cache: pnpm
 
-      # OIDC trusted publishing requires npm >= 11.5.1.
-      # Node 22 ships with npm 10.x — upgrade explicitly.
-      - name: Upgrade npm to >=11.5.1
-        run: |
-          npm install -g npm@latest
-          echo "npm: $(npm --version)"
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -239,8 +239,12 @@ jobs:
             echo "already_published=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Publish via OIDC
+      # OIDC trusted publishing requires npm >= 11.5.1. Node 22 ships with npm 10.x.
+      # We deliberately do NOT `npm install -g npm@latest` here: pnpm/action-setup
+      # earlier in the job hoisted some packages into the global node_modules path,
+      # and a global npm reinstall over that tree leaves @npmcli/arborist with
+      # missing transitive deps (`Cannot find module 'promise-retry'`). Instead,
+      # invoke npm 11+ ephemerally via npx — same OIDC token, no global mutation.
+      - name: Publish via OIDC (npx-isolated npm 11+)
         if: steps.check.outputs.already_published == 'false'
-        # No NODE_AUTH_TOKEN, no --provenance flag — both handled by OIDC.
-        # Use `npm` directly (not `pnpm publish`) for a known-good OIDC path.
-        run: npm publish --access public
+        run: npx --yes npm@latest publish --access public

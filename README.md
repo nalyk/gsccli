@@ -59,6 +59,32 @@ pnpm install && pnpm build && pnpm link --global
 The binary is `gsccli` either way (the `@nalyk/` scope is only on the npm package
 identifier, not on the CLI you invoke). Requires Node.js >= 22.
 
+### Updating
+
+```bash
+# Check current version
+gsccli --version
+
+# Check the latest published version
+npm view @nalyk/gsccli version
+
+# Upgrade in place (matches the install command you used)
+npm i -g @nalyk/gsccli@latest        # if installed with npm
+pnpm add -g @nalyk/gsccli@latest     # if installed with pnpm
+yarn global add @nalyk/gsccli@latest # if installed with yarn classic
+```
+
+If you previously ran `gsccli skills install --agent <name>`, the deployed
+`SKILL.md` files **don't update automatically** when you upgrade the CLI —
+they're plain files copied to `~/.<cli>/skills/gsccli/`. Refresh them after
+an upgrade with `--force`:
+
+```bash
+gsccli skills install --agent all --force   # all detected agents
+# or per-agent:
+gsccli skills install --agent claude --force
+```
+
 ## Authentication
 
 gsccli supports two authentication methods: **OAuth 2.0** (interactive) and **service
