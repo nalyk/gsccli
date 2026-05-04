@@ -23,7 +23,7 @@ jobs:
     name: release-please
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         with:
           # Default GITHUB_TOKEN works because we don't modify workflow files via
           # the bot. If we ever need to (e.g. release-please updating itself),
